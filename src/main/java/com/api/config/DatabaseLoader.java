@@ -21,6 +21,8 @@ public class DatabaseLoader implements ApplicationRunner{
 		this.userJpaRepository = userJpaRepository;
 	}
 	
+	
+	//TO-DO Should be refactored
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
 		if(userJpaRepository.findByUsername("admin")!=null){

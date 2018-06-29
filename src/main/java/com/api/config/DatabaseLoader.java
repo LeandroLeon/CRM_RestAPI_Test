@@ -23,10 +23,15 @@ public class DatabaseLoader implements ApplicationRunner{
 	
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
-		List<User> users = Arrays.asList(
+		if(userJpaRepository.findByUsername("admin")!=null){
+			
+		}else{
+			List<User> users = Arrays.asList(
                 new User("admin", "admin", new String[] {"ROLE_USER", "ROLE_ADMIN"}),
                 new User("user", "1234", new String[] {"ROLE_USER"})
-        );
-        userJpaRepository.saveAll(users);
+					);
+        
+			userJpaRepository.saveAll(users);
+		}
 	}
 }

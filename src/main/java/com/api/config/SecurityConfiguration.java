@@ -27,7 +27,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 	public void configure(HttpSecurity http) throws Exception {
 		super.configure(http);
 		http.authorizeRequests()
-			.antMatchers("/users/**").hasRole("ROLE_ADMIN")
+			
 			.anyRequest().authenticated()
 			.and()
 			.httpBasic()

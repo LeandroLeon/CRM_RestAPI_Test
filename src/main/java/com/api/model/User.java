@@ -16,7 +16,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 public class User {
 
-	public static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
+	public static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder(6);
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)

@@ -6,8 +6,9 @@ import org.springframework.stereotype.Repository;
 
 import com.api.model.Customer;
 
-@PreAuthorize("hasRole('ROLE_ADMIN')")
+
 @Repository
+@PreAuthorize("hasRole('ROLE_USER')")
 public interface CustomerJpaRepository extends JpaRepository<Customer, Long> {
 
 }

@@ -1,19 +1,18 @@
 package com.api.model;
 
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Repository;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+@Repository
 @Entity
 public class User {
 
@@ -31,8 +30,18 @@ public class User {
 	private String password;
 	
 	@JsonIgnore
-	@OneToMany
-	private List<Role> authorities;
+	private String[] roles;
+
+	public User() {
+		
+	}
+	 
+	public User(String username, String password, String[] roles) {
+		super();
+		this.username = username;
+		setPassword(password);
+		this.roles = roles;
+	}
 
 	public String getUsername() {
 		return username;
@@ -50,16 +59,12 @@ public class User {
 		this.password = PASSWORD_ENCODER.encode(password);
 	}
 
-	public List<Role> getAuthorities() {
-		return authorities;
+	public String[] getRoles() {
+		return roles;
 	}
 
-	public void setAuthorities(List<Role> authorities) {
-		this.authorities = authorities;
-	}
-	
-	public void addAuthority(Role role) {
-		this.authorities.add(role);
+	public void setRoles(String[] roles) {
+		this.roles = roles;
 	}
 	
 }

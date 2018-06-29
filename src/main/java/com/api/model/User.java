@@ -8,11 +8,9 @@ import javax.persistence.Id;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Repository;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-@Repository
 @Entity
 public class User {
 
@@ -29,7 +27,7 @@ public class User {
 	@Column(nullable=false)
 	private String password;
 	
-	@JsonIgnore
+	//@JsonIgnore
 	private String[] roles;
 
 	public User() {

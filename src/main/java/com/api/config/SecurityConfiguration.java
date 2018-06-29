@@ -12,7 +12,7 @@ import com.api.model.User;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled=true)
+@EnableGlobalMethodSecurity(prePostEnabled=true, securedEnabled=true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 	
 	@Autowired
@@ -25,13 +25,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 	
 	@Override
 	public void configure(HttpSecurity http) throws Exception {
-		super.configure(http);
 		http.authorizeRequests()
-			
-			.anyRequest().authenticated()
-			.and()
+			.antMatchers("/h2-console/**").permitAll()
+			.antMatchers("/api/customers/**").hasAnyRole("ADMIN", "USER")
+			.antMatchers("/api/users/**").hasRole("ADMIN")
+			.anyRequest().fullyAuthenticated()
+            .and()
 			.httpBasic()
 			.and()
-			.csrf().disable();
+			.csrf().disable()
+			.headers().frameOptions().disable();
 	}
 }

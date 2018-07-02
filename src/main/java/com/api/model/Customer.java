@@ -30,11 +30,11 @@ public class Customer {
 
 	@CreatedBy
 	@Column(nullable=false, updatable=false)
-	private String creator;
+	protected String creator;
 	
 	@LastModifiedBy
 	@Column(nullable=false)
-	private String lastModifier;
+	protected String lastModifier;
 	
 	
 	public String getName() {
@@ -59,5 +59,21 @@ public class Customer {
 
 	public void setPhotoField(byte[] photoField) {
 		this.photoField = photoField;
+	}
+
+	public String getCreator() {
+		return creator;
+	}
+
+	public void setCreator(String creator) {
+		this.creator = creator;
+	}
+
+	public String getLastModifier() {
+		return lastModifier;
+	}
+
+	public void setLastModifier(String lastModifier) {
+		this.lastModifier = lastModifier;
 	}
 }

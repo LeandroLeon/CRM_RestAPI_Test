@@ -17,7 +17,7 @@ public class User {
 	public static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder(6);
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
 	@Column(unique=true, nullable=false)
@@ -39,6 +39,10 @@ public class User {
 		this.username = username;
 		setPassword(password);
 		this.roles = roles;
+	}
+	
+	public Long getId() {
+		return id;
 	}
 
 	public String getUsername() {

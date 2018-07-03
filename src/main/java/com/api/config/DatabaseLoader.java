@@ -14,12 +14,8 @@ import com.api.repository.UserJpaRepository;
 @Component
 public class DatabaseLoader implements ApplicationRunner{
 
-	private UserJpaRepository userJpaRepository;
-	
 	@Autowired
-	public DatabaseLoader(UserJpaRepository userJpaRepository) {
-		this.userJpaRepository = userJpaRepository;
-	}
+	private UserJpaRepository userJpaRepository;
 	
 	
 	//TO-DO Should be refactored
@@ -30,7 +26,8 @@ public class DatabaseLoader implements ApplicationRunner{
 		}else{
 			 List<User> users = Arrays.asList(
                 new User("admin", "admin", new String[] {"ROLE_USER", "ROLE_ADMIN"}),
-                new User("user", "1234", new String[] {"ROLE_USER"})
+                new User("user", "1234", new String[] {"ROLE_USER"}),
+                new User("owner", "owner", new String[] {"ROLE_USER", "ROLE_ADMIN", "ROLE_OWNER"})
 					);
         
 			userJpaRepository.saveAll(users);

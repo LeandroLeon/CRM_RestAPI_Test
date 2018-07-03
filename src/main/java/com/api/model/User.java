@@ -2,6 +2,7 @@ package com.api.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -9,9 +10,12 @@ import javax.persistence.Id;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.api.config.UserEntityListener;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 @Entity
+@EntityListeners(UserEntityListener.class)
 public class User {
 
 	public static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder(6);
@@ -23,11 +27,9 @@ public class User {
 	@Column(unique=true, nullable=false)
 	private String username;
 	
-	@JsonIgnore
 	@Column(nullable=false)
 	private String password;
 	
-	//@JsonIgnore
 	private String[] roles;
 
 	public User() {
@@ -53,10 +55,12 @@ public class User {
 		this.username = username;
 	}
 
+	@JsonIgnore
 	public String getPassword() {
 		return password;
 	}
-
+	
+	@JsonSetter
 	public void setPassword(String password) {
 		this.password = PASSWORD_ENCODER.encode(password);
 	}
@@ -64,7 +68,6 @@ public class User {
 	public String[] getRoles() {
 		return roles;
 	}
-
 	public void setRoles(String[] roles) {
 		this.roles = roles;
 	}

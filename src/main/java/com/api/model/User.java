@@ -10,12 +10,12 @@ import javax.persistence.Id;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.api.config.UserEntityListener;
+import com.api.handler.UserEventHandler;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
 @Entity
-@EntityListeners(UserEntityListener.class)
+@EntityListeners(UserEventHandler.class)
 public class User {
 
 	public static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder(6);
@@ -70,6 +70,20 @@ public class User {
 	}
 	public void setRoles(String[] roles) {
 		this.roles = roles;
+	}
+	
+	public boolean isAdmin() {
+		for(String role : this.roles) {
+			if(role.equals("ROLE_ADMIN"))return true;
+		}
+		return false;
+	}
+	
+	public boolean isOwner() {
+		for(String role : this.roles) {
+			if(role.equals("ROLE_OWNER"))return true;
+		}
+		return false;
 	}
 	
 }

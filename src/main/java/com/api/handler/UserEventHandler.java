@@ -25,25 +25,47 @@ public class UserEventHandler {
 	public void checkMoreThanOneOwner(User user) {
 		if(user.isOwner()) {
 			throw new MoreThanOneOwnerException("It is forbbiden more than one owner person");
+		} else {
+			User.addOwner();
 		}
 	}
 	
 	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_OWNER')")
-	@HandleBeforeSave
 	@HandleBeforeDelete
 	public void checkDeletedUser(User user) {
 		if(user.isAdmin()) {
 			Authentication authentication =  SecurityContextHolder.getContext().getAuthentication();
 			Collection<? extends GrantedAuthority> roles = authentication.getAuthorities();
 			for(GrantedAuthority role : roles) {
-				if(role.getAuthority().equals("ROLE_OWNER")) {
+				if(role.getAuthority().toString().equals("ROLE_OWNER")) {
 					return;
-				}else {
-					throw new ForbiddenActionException();
 				}
 			}
+			throw new ForbiddenActionException();
 		} else if (user.isOwner()) {
 			throw new ForbiddenActionException();
 		}
+	}
+	
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_OWNER')")
+	@HandleBeforeSave
+	public void checkUpdateUser(User user) {
+		if(user.isAdmin()) {
+			if(loggedUserIsOwner())return;
+			throw new ForbiddenActionException();
+		}
+		else if (user.isOwner()) {
+			if(loggedUserIsOwner())return;
+			throw new ForbiddenActionException();
+		}
+}
+	
+	public boolean loggedUserIsOwner() {
+		Authentication authentication =  SecurityContextHolder.getContext().getAuthentication();
+		Collection<? extends GrantedAuthority> roles = authentication.getAuthorities();
+		for(GrantedAuthority role : roles) {
+			if(role.getAuthority().toString().equals("ROLE_OWNER"))return true;
+		}
+		return false;
 	}
 }

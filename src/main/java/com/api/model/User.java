@@ -72,6 +72,7 @@ public class User {
 		this.roles = roles;
 	}
 	
+	@JsonIgnore
 	public boolean isAdmin() {
 		for(String role : this.roles) {
 			if(role.equals("ROLE_ADMIN"))return true;
@@ -79,6 +80,7 @@ public class User {
 		return false;
 	}
 	
+	@JsonIgnore
 	public boolean isOwner() {
 		for(String role : this.roles) {
 			if(role.equals("ROLE_OWNER"))return true;
@@ -86,4 +88,14 @@ public class User {
 		return false;
 	}
 	
+	public void setRole(String role) {
+		if(this.isAdmin())return;
+		String[] roles = this.roles;
+		String[] result = new String[roles.length + 1];
+		int i = 0;
+		for(; i < roles.length; i++) {
+			result[i] = roles[i];
+		}
+		result[i]=role;
+	}
 }

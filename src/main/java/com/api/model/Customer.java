@@ -6,11 +6,11 @@ import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -28,13 +28,13 @@ public class Customer {
 	
 	private byte[] photoField;
 
+	@OneToOne
 	@CreatedBy
-	@Column(nullable=false, updatable=false)
-	protected String creator;
+	protected User creator;
 	
+	@OneToOne
 	@LastModifiedBy
-	@Column(nullable=false)
-	protected String lastModifier;
+	protected User lastModifier;
 	
 	
 	public String getName() {
@@ -61,19 +61,19 @@ public class Customer {
 		this.photoField = photoField;
 	}
 
-	public String getCreator() {
+	public User getCreator() {
 		return creator;
 	}
 
-	public void setCreator(String creator) {
+	public void setCreator(User creator) {
 		this.creator = creator;
 	}
 
-	public String getLastModifier() {
+	public User getLastModifier() {
 		return lastModifier;
 	}
 
-	public void setLastModifier(String lastModifier) {
+	public void setLastModifier(User lastModifier) {
 		this.lastModifier = lastModifier;
 	}
 }

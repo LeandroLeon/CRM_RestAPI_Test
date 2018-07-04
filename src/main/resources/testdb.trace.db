@@ -1,4 +1,0 @@
-2018-07-02 21:30:56 jdbc[13]: exception
-org.h2.jdbc.JdbcSQLException: Error de Sintaxis en sentencia SQL "INFORMATION_SCHEMA[*].TABLES"; se esperaba "INSERT, {"
-Syntax error in SQL statement "INFORMATION_SCHEMA[*].TABLES"; expected "INSERT, {"; SQL statement:
-INFORMATION_SCHEMA.TABLES [42001-197]

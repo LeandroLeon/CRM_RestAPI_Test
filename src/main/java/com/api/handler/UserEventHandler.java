@@ -25,9 +25,7 @@ public class UserEventHandler {
 	public void checkMoreThanOneOwner(User user) {
 		if(user.isOwner()) {
 			throw new MoreThanOneOwnerException("It is forbbiden more than one owner person");
-		} else {
-			User.addOwner();
-		}
+		} 
 	}
 	
 	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_OWNER')")

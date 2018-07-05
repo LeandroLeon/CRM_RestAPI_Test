@@ -1,4 +1,4 @@
-package com.api.config;
+package com.api.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.api.exception.ForbiddenActionException;
 import com.api.exception.MoreThanOneOwnerException;
+import com.api.exception.NotLoggedUserException;
 
 @ControllerAdvice
 public class ControllerConfiguration {
@@ -20,6 +21,12 @@ public class ControllerConfiguration {
 	@ExceptionHandler(ForbiddenActionException.class)
 	@ResponseStatus(value=HttpStatus.BAD_REQUEST, reason="You can neither delete an admin and nor the owner")
 	public void deletingOwner() {
+		
+	}
+	
+	@ExceptionHandler(NotLoggedUserException.class)
+	@ResponseStatus(value=HttpStatus.BAD_REQUEST, reason="You must be logged In")
+	public void userNotLogged() {
 		
 	}
 	

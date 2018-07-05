@@ -22,7 +22,6 @@ public interface UserJpaRepository extends JpaRepository<User, Long> {
 	
 	@PreAuthorize("hasRole('ROLE_OWNER')")
 	void deleteAll(Iterable<? extends User> entities);
-	
-	
+
 }
 

@@ -2,18 +2,11 @@ package com.api.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
-
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
-@EntityListeners(AuditingEntityListener.class)
 public class Customer {
 
 	@Id
@@ -26,16 +19,15 @@ public class Customer {
 	@Column(nullable=false)
 	private String surname;
 	
-	private byte[] photoField;
+	private String photo;
 
-	@OneToOne
-	@CreatedBy
-	protected User creator;
+	private String creator;
 	
-	@OneToOne
-	@LastModifiedBy
-	protected User lastModifier;
+	private String lastModifier;
 	
+	public Long getId() {
+		return this.id;
+	}
 	
 	public String getName() {
 		return name;
@@ -53,27 +45,27 @@ public class Customer {
 		this.surname = surname;
 	}
 
-	public byte[] getPhotoField() {
-		return photoField;
+	public String getPhoto() {
+		return photo;
 	}
 
-	public void setPhotoField(byte[] photoField) {
-		this.photoField = photoField;
+	public void setPhoto(String photo) {
+		this.photo = photo;
 	}
 
-	public User getCreator() {
+	public String getCreator() {
 		return creator;
 	}
 
-	public void setCreator(User creator) {
+	public void setCreator(String creator) {
 		this.creator = creator;
 	}
 
-	public User getLastModifier() {
+	public String getLastModifier() {
 		return lastModifier;
 	}
 
-	public void setLastModifier(User lastModifier) {
+	public void setLastModifier(String lastModifier) {
 		this.lastModifier = lastModifier;
 	}
 }

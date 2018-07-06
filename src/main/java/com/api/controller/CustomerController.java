@@ -1,6 +1,5 @@
 package com.api.controller;
 
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
@@ -26,12 +25,16 @@ import com.api.exception.NotLoggedUserException;
 import com.api.model.Customer;
 import com.api.repository.CustomerJpaRepository;
 import com.api.repository.UserJpaRepository;
+import com.api.service.S3Service;
 import com.api.service.StorageService;
 
 @RestController
 @RequestMapping(path="/api/customers")
 public class CustomerController {
 
+	@Autowired
+	private S3Service s3Service;
+	
 	@Autowired
 	private StorageService storageService;
  
@@ -83,15 +86,15 @@ public class CustomerController {
     
     
 	@PutMapping("/{customerId}/postPhoto")
-	public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file, @PathVariable Long customerId) {
+	public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile[] file, @PathVariable Long customerId) {
 		String message = "";
 		try {
 			String destFilename = "fileOfCustomer" + customerId.toString() + ".jpg";
 			updatePhoto(customerId, file, destFilename);
-			message = "You successfully uploaded " + file.getOriginalFilename() + "! It is saved as" + destFilename;
+			message = "You successfully uploaded " + file[0].getOriginalFilename() + "! It is saved as " + destFilename;
 			return ResponseEntity.status(HttpStatus.OK).body(message);
 		} catch (Exception e) {
-			message = "FAIL to upload " + file.getOriginalFilename() + "! Try it again changing the name.";
+			message = "FAIL to upload " + file[0].getOriginalFilename() + "! Try it again changing the name.";
 			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(message);
 		}
 	}
@@ -117,9 +120,10 @@ public class CustomerController {
 		}
 	}
 	
-	private void updatePhoto(Long customerId, MultipartFile file, String destFilename) {
+	private void updatePhoto(Long customerId, MultipartFile[] files, String destFilename) {
 		Customer customer = customerJpaRepository.findById(customerId).get();
-		storageService.store(file, destFilename);
+		//storageService.store(file, destFilename);
+		s3Service.upload(files);
     	customer.setPhoto("/uploads/" + destFilename);
         customerJpaRepository.saveAndFlush(customer); 
 	}

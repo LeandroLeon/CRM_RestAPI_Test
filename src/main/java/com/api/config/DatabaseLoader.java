@@ -17,8 +17,6 @@ public class DatabaseLoader implements ApplicationRunner{
 	@Autowired
 	private UserJpaRepository userJpaRepository;
 	
-	
-	//TO-DO Should be refactored
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
 		if(userJpaRepository.findByUsername("admin")!=null){

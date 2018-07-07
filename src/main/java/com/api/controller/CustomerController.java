@@ -1,6 +1,5 @@
 package com.api.controller;
 
-import java.nio.file.Paths;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +9,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -21,12 +19,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.amazonaws.AmazonClientException;
+import com.amazonaws.AmazonServiceException;
 import com.api.exception.NotLoggedUserException;
 import com.api.model.Customer;
 import com.api.repository.CustomerJpaRepository;
 import com.api.repository.UserJpaRepository;
 import com.api.service.S3Service;
-import com.api.service.StorageService;
 
 @RestController
 @RequestMapping(path="/api/customers")
@@ -34,9 +33,6 @@ public class CustomerController {
 
 	@Autowired
 	private S3Service s3Service;
-	
-	@Autowired
-	private StorageService storageService;
  
 	@Autowired
 	private CustomerJpaRepository customerJpaRepository;
@@ -45,6 +41,7 @@ public class CustomerController {
 	private UserJpaRepository userJpaRepository;
 	
 	private final String rootPath = "http://localhost:8080/api";
+	private final String bucketRootPath = "https://s3.eu-west-2.amazonaws.com/avatarphotoscrm2/";
 	
 	@GetMapping
 	public @ResponseBody Iterable<Customer> getAllCustomers(){
@@ -84,30 +81,31 @@ public class CustomerController {
         return customerToUpdate;
     }
     
-    
-	@PutMapping("/{customerId}/postPhoto")
-	public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile[] file, @PathVariable Long customerId) {
+	@PostMapping("/{customerId}/postPhoto")
+	public @ResponseBody 
+	ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file, @PathVariable Long customerId) {
 		String message = "";
 		try {
-			String destFilename = "fileOfCustomer" + customerId.toString() + ".jpg";
+			String destFilename = getImagePath(customerId.toString());
 			updatePhoto(customerId, file, destFilename);
-			message = "You successfully uploaded " + file[0].getOriginalFilename() + "! It is saved as " + destFilename;
+			message = "You successfully uploaded " + file.getOriginalFilename() + "! It is saved as " + destFilename;
 			return ResponseEntity.status(HttpStatus.OK).body(message);
 		} catch (Exception e) {
-			message = "FAIL to upload " + file[0].getOriginalFilename() + "! Try it again changing the name.";
+			message = "FAIL to upload " + file.getOriginalFilename() + "! Try it again changing the name.";
 			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(message);
 		}
 	}
 	
-	@PatchMapping(path="/{customerId}/deletePhoto")
+	@DeleteMapping(path="/{customerId}/deletePhoto")
 	public @ResponseBody void deletePhoto(@PathVariable Long customerId) {
 		Customer customer = customerJpaRepository.findById(customerId).get();
-		String photoPath = customer.getPhoto(); 
+		s3Service.deletePhoto(getImagePath(customerId.toString()));
 		customer.setPhoto(null);
 		customerJpaRepository.saveAndFlush(customer);
-		storageService.deleteFile(Paths.get("./uploads" + photoPath)); 
 	}
 	
+	
+// ======================================Private Methods================================================ //
 	
 	private Long getCurrentUserId() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -120,11 +118,23 @@ public class CustomerController {
 		}
 	}
 	
-	private void updatePhoto(Long customerId, MultipartFile[] files, String destFilename) {
+	private void updatePhoto(Long customerId, MultipartFile file, String destFilename) {
 		Customer customer = customerJpaRepository.findById(customerId).get();
 		//storageService.store(file, destFilename);
-		s3Service.upload(files);
-    	customer.setPhoto("/uploads/" + destFilename);
+		try {
+			s3Service.upload(file, destFilename);
+		} catch (AmazonServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (AmazonClientException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	customer.setPhoto(bucketRootPath + destFilename);
         customerJpaRepository.saveAndFlush(customer); 
+	}
+	
+	private String getImagePath(String customerId) {
+		return "avatarOfCustomer" + customerId.toString() + ".jpg";
 	}
 }

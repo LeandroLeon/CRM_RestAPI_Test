@@ -18,7 +18,7 @@ To run this project locally, perform the following steps.
 
 1. Clone project to your machine using git "git clone https://github.com/LeandroLeon/CRM_RestAPI_Test" 
 2. Import the project into your IDE using the maven pom.xml <br/>
-  In spring STS suite this is done by importing an existing maven project
+  In spring STS this is done by importing an existing maven project
 3. Next try running the app as a Spring Boot app. You can do this by running the RestApiApplication.java
 
 

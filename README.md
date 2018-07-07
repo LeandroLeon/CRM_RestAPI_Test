@@ -96,7 +96,7 @@ For example (user entity)
 > you have to send the full payload as the request whereas with PATCH,
 > you only send the parameters which you want to update.
 
-### Delete Entities (DELETE_Request)
+### Delete an instance (DELETE_Request)
 
 ````
 http://localhost:8080/api/{entity}/{entityId}

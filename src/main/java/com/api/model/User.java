@@ -88,8 +88,28 @@ public class User {
 		return false;
 	}
 	
+	@JsonIgnore
+	public boolean isUser() {
+		for(String role : this.roles) {
+			if(role.equals("ROLE_USER"))return true;
+		}
+		return false;
+	}
+	
+	public boolean haveRole(String role) {
+		for(String auxRole : this.roles) {
+			if(role.equals(auxRole))return true;
+		}
+		return false; 
+	}
+	
 	public void setRole(String role) {
-		if(this.isAdmin())return;
+		if(this.roles == null) {
+			this.roles = new String[1];
+			this.roles[0] = role;
+		}
+		
+		if(this.haveRole(role))return;
 		String[] roles = this.roles;
 		String[] result = new String[roles.length + 1];
 		int i = 0;
@@ -97,5 +117,18 @@ public class User {
 			result[i] = roles[i];
 		}
 		result[i]=role;
+		this.roles = result;
+	}
+	
+	public void deleteRole(String role) {
+		if(!this.haveRole(role))return;
+		String[] roles = this.roles;
+		String[] result = new String[roles.length -1];
+		for(int rolesIndex = 0,resultIndex = 0; rolesIndex < roles.length; rolesIndex++) {
+			if(roles[rolesIndex].equals(role))continue;
+			result[resultIndex] = roles[rolesIndex];
+			resultIndex++;
+		}
+		this.roles = result;
 	}
 }

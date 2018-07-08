@@ -81,9 +81,9 @@ public class CustomerController {
         return customerToUpdate;
     }
     
-	@PostMapping("/{customerId}/postPhoto")
+	@PostMapping("/{customerId}/photo")
 	public @ResponseBody 
-	ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file, @PathVariable Long customerId) {
+	ResponseEntity<String> uploadPhoto(@RequestParam("file") MultipartFile file, @PathVariable Long customerId) {
 		String message = "";
 		try {
 			String destFilename = getImagePath(customerId.toString());
@@ -96,7 +96,7 @@ public class CustomerController {
 		}
 	}
 	
-	@DeleteMapping(path="/{customerId}/deletePhoto")
+	@DeleteMapping(path="/{customerId}/photo")
 	public @ResponseBody void deletePhoto(@PathVariable Long customerId) {
 		Customer customer = customerJpaRepository.findById(customerId).get();
 		s3Service.deletePhoto(getImagePath(customerId.toString()));
@@ -120,14 +120,11 @@ public class CustomerController {
 	
 	private void updatePhoto(Long customerId, MultipartFile file, String destFilename) {
 		Customer customer = customerJpaRepository.findById(customerId).get();
-		//storageService.store(file, destFilename);
 		try {
 			s3Service.upload(file, destFilename);
 		} catch (AmazonServiceException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (AmazonClientException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     	customer.setPhoto(bucketRootPath + destFilename);

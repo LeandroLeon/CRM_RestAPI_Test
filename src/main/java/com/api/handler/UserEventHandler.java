@@ -20,7 +20,7 @@ import com.api.model.User;
 @RepositoryEventHandler(User.class)
 public class UserEventHandler {
 	
-	@PreAuthorize("hasRole('ROLE_OWNER')")
+	@PreAuthorize("hasAnyRole('ROLE_OWNER', 'ROLE_ADMIN')")
 	@HandleBeforeCreate
 	public void checkMoreThanOneOwner(User user) {
 		if(user.isOwner()) {
@@ -58,7 +58,7 @@ public class UserEventHandler {
 		}
 }
 	
-	public boolean loggedUserIsOwner() {
+	private boolean loggedUserIsOwner() {
 		Authentication authentication =  SecurityContextHolder.getContext().getAuthentication();
 		Collection<? extends GrantedAuthority> roles = authentication.getAuthorities();
 		for(GrantedAuthority role : roles) {

@@ -12,7 +12,7 @@ import com.api.model.User;
 import com.api.repository.UserJpaRepository;
 
 @Component
-public class DatabaseLoader implements ApplicationRunner{
+public class DatabaseSampleLoader implements ApplicationRunner{
 
 	@Autowired
 	private UserJpaRepository userJpaRepository;

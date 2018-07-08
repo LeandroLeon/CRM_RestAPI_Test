@@ -40,8 +40,8 @@ public class CustomerController {
 	@Autowired
 	private UserJpaRepository userJpaRepository;
 	
-	private final String rootPath = "http://localhost:8080/api";
-	private final String bucketRootPath = "https://s3.eu-west-2.amazonaws.com/avatarphotoscrm2/";
+	private final String ROOTPATH = "http://localhost:8080/api";
+	private final String BUCKETROOTPATH = "https://s3.eu-west-2.amazonaws.com/avatarphotoscrm2/";
 	
 	@GetMapping
 	public @ResponseBody Iterable<Customer> getAllCustomers(){
@@ -57,8 +57,8 @@ public class CustomerController {
     @PostMapping
     public @ResponseBody
     Customer addCustomer(@RequestBody Customer customer) {
-    	customer.setCreator(rootPath + "/users/" + getCurrentUserId());
-    	customer.setLastModifier(rootPath + "/users/" + getCurrentUserId());
+    	customer.setCreator(ROOTPATH + "/users/" + getCurrentUserId());
+    	customer.setLastModifier(ROOTPATH + "/users/" + getCurrentUserId());
         customerJpaRepository.saveAndFlush(customer);
         return customer;
     }
@@ -76,7 +76,7 @@ public class CustomerController {
 		if(currentUserId == -1L)throw new NotLoggedUserException();
     	Customer customerToUpdate = customerJpaRepository.findById(customerId).get(); 
     	customerToUpdate = customer;
-    	customerToUpdate.setLastModifier(rootPath + "/users/" + currentUserId);
+    	customerToUpdate.setLastModifier(ROOTPATH + "/users/" + currentUserId);
         customerJpaRepository.saveAndFlush(customerToUpdate);
         return customerToUpdate;
     }
@@ -127,7 +127,7 @@ public class CustomerController {
 		} catch (AmazonClientException e) {
 			e.printStackTrace();
 		}
-    	customer.setPhoto(bucketRootPath + destFilename);
+    	customer.setPhoto(BUCKETROOTPATH + destFilename);
         customerJpaRepository.saveAndFlush(customer); 
 	}
 	

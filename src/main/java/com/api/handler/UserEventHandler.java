@@ -13,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.api.exception.ForbiddenActionException;
+import com.api.exception.IllegalDeleteOperationException;
 import com.api.exception.MoreThanOneOwnerException;
 import com.api.model.User;
 
@@ -24,7 +25,7 @@ public class UserEventHandler {
 	@HandleBeforeCreate
 	public void checkMoreThanOneOwner(User user) {
 		if(user.isOwner()) {
-			throw new MoreThanOneOwnerException("It is forbbiden more than one owner person");
+			throw new MoreThanOneOwnerException("It is forbbiden more than one owner");
 		} else if (user.isAdmin()) {
 			if(loggedUserIsOwner())return;
 			throw new ForbiddenActionException();	
@@ -34,16 +35,10 @@ public class UserEventHandler {
 	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_OWNER')")
 	@HandleBeforeDelete
 	public void checkDeletedUser(User user) {
-		if(user.isAdmin()) {
-			Authentication authentication =  SecurityContextHolder.getContext().getAuthentication();
-			Collection<? extends GrantedAuthority> roles = authentication.getAuthorities();
-			for(GrantedAuthority role : roles) {
-				if(role.getAuthority().toString().equals("ROLE_OWNER")) {
-					return;
-				}
-			}
-			throw new ForbiddenActionException();
-		} else if (user.isOwner()) {
+		if (user.isOwner()) {
+			throw new IllegalDeleteOperationException();
+		} else if(user.isAdmin()) {
+			if(loggedUserIsOwner())return;
 			throw new ForbiddenActionException();
 		}
 	}
@@ -51,14 +46,13 @@ public class UserEventHandler {
 	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_OWNER')")
 	@HandleBeforeSave
 	public void checkUpdateUser(User user) {
-		if(user.isAdmin()) {
+		if (user.isOwner()) {
+			if(loggedUserIsOwner())return;
+			throw new ForbiddenActionException();
+		} else if(user.isAdmin()) {
 			if(loggedUserIsOwner())return;
 			throw new ForbiddenActionException();
 		}
-		else if (user.isOwner()) {
-			if(loggedUserIsOwner())return;
-			throw new ForbiddenActionException();
-		}	
 	}
 	
 	private boolean loggedUserIsOwner() {

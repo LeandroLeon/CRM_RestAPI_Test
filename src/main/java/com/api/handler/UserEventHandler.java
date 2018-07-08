@@ -25,7 +25,10 @@ public class UserEventHandler {
 	public void checkMoreThanOneOwner(User user) {
 		if(user.isOwner()) {
 			throw new MoreThanOneOwnerException("It is forbbiden more than one owner person");
-		} 
+		} else if (user.isAdmin()) {
+			if(loggedUserIsOwner())return;
+			throw new ForbiddenActionException();	
+		}
 	}
 	
 	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_OWNER')")
@@ -55,8 +58,8 @@ public class UserEventHandler {
 		else if (user.isOwner()) {
 			if(loggedUserIsOwner())return;
 			throw new ForbiddenActionException();
-		}
-}
+		}	
+	}
 	
 	private boolean loggedUserIsOwner() {
 		Authentication authentication =  SecurityContextHolder.getContext().getAuthentication();

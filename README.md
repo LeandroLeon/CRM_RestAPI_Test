@@ -109,10 +109,10 @@ This functionality is only available for customer because It is the entity who h
 
 #### Add a photo to a Customer (POST_Request)
 
-Photos are sent as MultipartFiles with a key ('file') in through a form-data
+Photos are sent as MultipartFiles with a key ('file') through a form-data
 
 ````
-http://localhost:8080/api/customers/{customerId}/postPhoto
+http://localhost:8080/api/customers/{customerId}/photo
 ````
 
 **Take Care** !! If you upload a photo to a user that already have a photo, the first one will be replaced
@@ -121,7 +121,7 @@ http://localhost:8080/api/customers/{customerId}/postPhoto
 #### Delete a photo (DELETE_Request)
 
 ````
-http://localhost:8080/api/customers/{customerId}/deletePhoto
+http://localhost:8080/api/customers/{customerId}/photo
 ````
 
 

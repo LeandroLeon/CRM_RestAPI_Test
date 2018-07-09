@@ -1,5 +1,6 @@
 package com.api.controller;
 
+import java.io.IOException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,6 +95,12 @@ public class CustomerController {
 			message = "FAIL to upload " + file.getOriginalFilename() + "! Try it again changing the name.";
 			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(message);
 		}
+	}
+	
+	@GetMapping(path = "/{customerId}/photo")
+	public ResponseEntity<byte[]> download(@PathVariable Long customerId) throws IOException {
+		String path = getImagePath(customerId.toString());
+		return s3Service.download(path);
 	}
 	
 	@DeleteMapping(path="/{customerId}/photo")

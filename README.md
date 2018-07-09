@@ -19,7 +19,8 @@ To run this project locally, perform the following steps.
 1. Clone project to your machine using git "git clone https://github.com/LeandroLeon/CRM_RestAPI_Test" 
 2. Import the project into your IDE using the maven pom.xml <br/>
   In spring STS this is done by importing an existing maven project
-3. Next try running the app as a Spring Boot app. You can do this by running the RestApiApplication.java
+3. In src/main/resources/application.properties you have to add your own credentials of AWS
+4. Next try running the app as a Spring Boot app. You can do this by running the RestApiApplication.java
 
 
 ## Funcionality

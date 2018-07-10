@@ -25,6 +25,8 @@ To run this project locally, perform the following steps.
 
 ## Funcionality
 
+In this API you have 3 levels of access control Owner > Admin > User. Besides there exists three default users named as them main authority "user", "admin" and "owner" whose passwords are "1234", "admin" and "owner" respectively.  It is highly recommended to change the password of the owner and delete or replace other accounts.
+
 Note: On the examples below, {entity} should be replaced for "users" or "customers"
 
 ### Get Entities (GET_Requests)
@@ -48,6 +50,8 @@ You should send a Post request with the Json new instance of the entity
 ````
 http://localhost:8080/api/{entity}
 ````
+
+Note: It does exist three main roles, "user", "admin" and "owner". If you want to add a user with some role, you have to set the role like this --> "ROLE_OWNER", "ROLE_ADMIN" or "ROLE_USER" 
 
 #### Customers Example
 
@@ -124,9 +128,6 @@ http://localhost:8080/api/customers/{customerId}/photo
 ````
 http://localhost:8080/api/customers/{customerId}/photo
 ````
-
-
-
 
 
 

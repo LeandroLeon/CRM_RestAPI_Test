@@ -59,11 +59,10 @@ public class CustomerController {
 
     @PostMapping
     public @ResponseBody
-    Customer addCustomer(@RequestBody Customer customer) {
+    Customer addCustomer(@RequestBody Customer customer) throws NotLoggedUserException {
         customer.setCreator(ROOTPATH + "/users/" + getCurrentUserId());
         customer.setLastModifier(ROOTPATH + "/users/" + getCurrentUserId());
-        customerJpaRepository.saveAndFlush(customer);
-        return customer;
+        return customerJpaRepository.saveAndFlush(customer);
     }
 
     @DeleteMapping(path = "/{customerId}")
@@ -100,8 +99,8 @@ public class CustomerController {
 
     @GetMapping(path = "/{customerId}/photo")
     public ResponseEntity<byte[]> download(@PathVariable Long customerId) throws IOException {
-        String path = getImagePath(customerId.toString());
-        return s3Service.download(path);
+        return s3Service.download(getImagePath(customerId.toString()));
+
     }
 
     @DeleteMapping(path = "/{customerId}/photo")
@@ -118,9 +117,7 @@ public class CustomerController {
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new NotLoggedUserException();
         }
-
-        String username = authentication.getName();
-        return userJpaRepository.findByUsername(username).getId();
+        return userJpaRepository.findByUsername(authentication.getName()).getId();
     }
 
     private void updatePhoto(Long customerId, MultipartFile file, String destFilename) {

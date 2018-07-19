@@ -51,22 +51,6 @@ public class S3Service {
 
 		return putObjectResult;
 	}
-
-	public List<PutObjectResult> upload(MultipartFile[] multipartFiles) {
-		List<PutObjectResult> putObjectResults = new ArrayList<>();
-
-		Arrays.stream(multipartFiles)
-				.filter(multipartFile -> !StringUtils.isEmpty(multipartFile.getOriginalFilename()))
-				.forEach(multipartFile -> {
-					try {
-						putObjectResults.add(upload(multipartFile.getInputStream(), multipartFile.getOriginalFilename()));
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				});
-
-		return putObjectResults;
-	}
 	
 	public List<PutObjectResult> upload(MultipartFile multipartFile, String key) {
 		List<PutObjectResult> putObjectResults = new ArrayList<>();
